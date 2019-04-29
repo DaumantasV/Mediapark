@@ -13,4 +13,4 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app w
 ## Login info 
 
 Email: user@email.com
-Password: 123456
+Password: Sl@pt4

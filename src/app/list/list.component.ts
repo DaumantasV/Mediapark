@@ -11,7 +11,13 @@ import {
   MatDialogRef,
   MatDialog,
 } from '@angular/material';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  NgForm,
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormControl,
+} from '@angular/forms';
 
 import { AuthService } from '../auth/auth.service';
 import { Band } from '../band.model';
@@ -38,12 +44,16 @@ export class ListComponent implements OnInit {
   ];
   userActivity;
   userInactive: Subject<any> = new Subject();
+  newColumn = false;
+  newColumnName: string;
 
   @ViewChild(MatSort) sort: MatSort;
-  @ViewChild('dialog') dialogTemplate: TemplateRef<any>;
+  @ViewChild('editDialog') editTemplate: TemplateRef<any>;
+  @ViewChild('warningDialog') warningTemplate: TemplateRef<any>;
 
   constructor(
-    public dialog: MatDialog,
+    public editDialog: MatDialog,
+    public warningDialog: MatDialog,
     private formBuilder: FormBuilder,
     private authService: AuthService,
   ) {
@@ -73,9 +83,22 @@ export class ListComponent implements OnInit {
     return this.bandForm.get('state');
   }
 
+  get newCol() {
+    return this.bandForm.get('newCol');
+  }
+
   ngOnInit() {
     if (!('bandList' in sessionStorage)) {
       sessionStorage.setItem('bandList', JSON.stringify(this.initialBands));
+    }
+
+    if(('newColumn' in sessionStorage)) {
+      this.newColumn = true;
+      this.newColumnName = sessionStorage.getItem('newColumn');
+    }
+
+    if(('displayedColumns' in sessionStorage)) {
+      this.displayedColumns = JSON.parse(sessionStorage.getItem('displayedColumns')).displayedColumns;
     }
 
     this.bandForm = this.formBuilder.group({
@@ -83,6 +106,7 @@ export class ListComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(3)]],
       genre: ['', [Validators.required, Validators.minLength(3)]],
       activeSince: ['', [Validators.required, Validators.max(2019)]],
+      newCol: [''],
       state: ['', [Validators.required, Validators.minLength(3)]],
     });
 
@@ -142,8 +166,8 @@ export class ListComponent implements OnInit {
   editBand(id: number): void {
     const editBand = this.getBandList().filter(band => band.id === id);
     this.bandForm.setValue(editBand[0]);
-    this.dialogRef = this.dialog.open(this.dialogTemplate, {
-      width: '75%',
+    this.dialogRef = this.editDialog.open(this.editTemplate, {
+      width: '80%',
     });
 
     this.dialogRef.afterClosed().subscribe((result: boolean) => {
@@ -160,6 +184,56 @@ export class ListComponent implements OnInit {
       }
       this.resetForm();
     });
+  }
+
+  addColumn(columnNameForm: NgForm): void {
+    this.newColumn = true;
+    this.newColumnName = columnNameForm.value.name;
+    sessionStorage.setItem('newColumn', this.newColumnName);
+    this.displayedColumns.splice(5, 0, 'newCol');
+    sessionStorage.setItem('displayedColumns', JSON.stringify({displayedColumns: this.displayedColumns}));
+  }
+
+  isWarningDialog(): boolean {
+    var isTrue: boolean
+    this.getBandList().forEach(band => {
+      if (band.newCol !== '') {
+        isTrue = true;
+      }
+    })
+    if (isTrue){
+      return true;
+    }
+    return false;
+  }
+
+  onRemoveColumnClick(): void {
+    if(this.isWarningDialog()) {
+      this.dialogRef = this.warningDialog.open(this.warningTemplate, {
+        width: '80%',
+      });
+  
+      this.dialogRef.afterClosed().subscribe((result: boolean) => {
+        if (result) {
+          this.removeColumn();
+        }
+      });
+    } else {
+      this.removeColumn();
+    } 
+  }
+
+  removeColumn(): void {
+    sessionStorage.removeItem('newColumn');
+    sessionStorage.removeItem('displayedColumns');
+    this.displayedColumns = this.displayedColumns.filter(column => column !== 'newCol');
+    const noColList = this.getBandList().map(band => {
+      const clearedBand = band;
+      clearedBand.newCol = '';
+      return clearedBand;
+    });
+    sessionStorage.setItem('bandList', JSON.stringify(noColList));
+    this.newColumn = false;
   }
 
   logout(): void {

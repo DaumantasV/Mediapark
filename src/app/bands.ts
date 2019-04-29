@@ -6,6 +6,7 @@ export const BANDS: Band[] = [
     name: 'Khruangbin',
     genre: 'Psychedelic Rock',
     activeSince: 2010,
+    newCol: '',
     state: 'Active',
   },
   {
@@ -13,6 +14,7 @@ export const BANDS: Band[] = [
     name: 'Kyuss',
     genre: 'Desert Rock',
     activeSince: 1987,
+    newCol: '',
     state: 'Active',
   },
   {
@@ -20,6 +22,7 @@ export const BANDS: Band[] = [
     name: 'Bolt Thrower',
     genre: 'Death Metal',
     activeSince: 1986,
+    newCol: '',
     state: 'Split Up',
   },
   {
@@ -27,6 +30,7 @@ export const BANDS: Band[] = [
     name: 'GOLD',
     genre: 'Dark Rock',
     activeSince: 2011,
+    newCol: '',
     state: 'Active',
   },
   {
@@ -34,6 +38,7 @@ export const BANDS: Band[] = [
     name: 'Roger Alan Wade',
     genre: 'Country',
     activeSince: 2005,
+    newCol: '',
     state: 'Active',
   },
   {
@@ -41,6 +46,7 @@ export const BANDS: Band[] = [
     name: 'Mgla',
     genre: 'Black Metal',
     activeSince: 2000,
+    newCol: '',
     state: 'Active',
   },
   {
@@ -48,6 +54,7 @@ export const BANDS: Band[] = [
     name: 'Esperanza Spalding',
     genre: 'Jazz',
     activeSince: 2000,
+    newCol: '',
     state: 'Active',
   },
   {
@@ -55,6 +62,7 @@ export const BANDS: Band[] = [
     name: 'Failure',
     genre: 'Alternative Rock',
     activeSince: 1990,
+    newCol: '',
     state: 'Active',
   },
   {
@@ -62,6 +70,7 @@ export const BANDS: Band[] = [
     name: 'The Arson Project',
     genre: 'Grindcore',
     activeSince: 2005,
+    newCol: '',
     state: 'Active',
   },
   {
@@ -69,6 +78,7 @@ export const BANDS: Band[] = [
     name: 'Death In June',
     genre: 'Neofolk',
     activeSince: 1981,
+    newCol: '',
     state: 'Active',
   },
 ];

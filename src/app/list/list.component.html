@@ -1,16 +1,32 @@
 <button mat-flat-button (click)="logout()" color="primary">
   <mat-icon>exit_to_app</mat-icon> Logout
 </button>
-
+<mat-accordion *ngIf="!newColumn">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title> Add New Column </mat-panel-title>
+    </mat-expansion-panel-header>
+    <form #columnNameForm="ngForm" (ngSubmit)="addColumn(columnNameForm)">
+      <mat-form-field>
+        <input
+          name="name"
+          matInput
+          ngModel
+          required
+          #first="ngModel"
+          placeholder="Column Name"
+        />
+      </mat-form-field>
+      <button mat-flat-button color="primary" [disabled]="!columnNameForm.valid">
+        <mat-icon>add</mat-icon>Add Column
+      </button>
+    </form>
+  </mat-expansion-panel>
+</mat-accordion>
 <mat-accordion>
   <mat-expansion-panel>
     <mat-expansion-panel-header>
-      <mat-panel-title>
-        Add New Band
-      </mat-panel-title>
-      <mat-panel-description>
-        Type Band Info
-      </mat-panel-description>
+      <mat-panel-title> Add New Band </mat-panel-title>
     </mat-expansion-panel-header>
     <form [formGroup]="bandForm" (ngSubmit)="addBand()">
       <mat-form-field>
@@ -24,17 +40,12 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [formControl]="name" type="string" placeholder="Name" />
+        <input matInput [formControl]="name" type="text" placeholder="Name" />
         <mat-error *ngIf="!name.valid">Valid name is required!</mat-error>
       </mat-form-field>
 
       <mat-form-field>
-        <input
-          matInput
-          [formControl]="genre"
-          type="string"
-          placeholder="Genre"
-        />
+        <input matInput [formControl]="genre" type="text" placeholder="Genre" />
         <mat-error *ngIf="!genre.valid">Valid genre is required!</mat-error>
       </mat-form-field>
 
@@ -54,10 +65,18 @@
         <input
           matInput
           [formControl]="state"
-          type="string"
+          type="text"
           placeholder="Status"
         />
         <mat-error *ngIf="!state.valid">Valid state is required!</mat-error>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="newColumn">
+        <input
+          matInput
+          [formControl]="newCol"
+          placeholder="{{newColumnName}}"
+        />
       </mat-form-field>
 
       <button
@@ -93,6 +112,20 @@
     <td mat-cell *matCellDef="let element">{{ element.activeSince }}</td>
   </ng-container>
 
+  <ng-container *ngIf="newColumn" matColumnDef="newCol">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      {{ newColumnName }}
+      <button
+        mat-icon-button
+        (click)="onRemoveColumnClick()"
+        matTooltip="Remove Column"
+      >
+        <mat-icon color="danger">delete_forever</mat-icon>
+      </button>
+    </th>
+    <td mat-cell *matCellDef="let element">{{ element.newCol }}</td>
+  </ng-container>
+
   <ng-container matColumnDef="state">
     <th mat-header-cell *matHeaderCellDef mat-sort-header>State</th>
     <td mat-cell *matCellDef="let element">{{ element.state }}</td>
@@ -122,7 +155,7 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>
 
-<ng-template #dialog>
+<ng-template #editDialog>
   <h1 mat-dialog-title>Edit Band.</h1>
   <div mat-dialog-content>
     <form [formGroup]="bandForm">
@@ -137,17 +170,12 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [formControl]="name" type="string" placeholder="Name" />
+        <input matInput [formControl]="name" type="text" placeholder="Name" />
         <mat-error *ngIf="!name.valid">Valid name is required!</mat-error>
       </mat-form-field>
 
       <mat-form-field>
-        <input
-          matInput
-          [formControl]="genre"
-          type="string"
-          placeholder="Genre"
-        />
+        <input matInput [formControl]="genre" type="text" placeholder="Genre" />
         <mat-error *ngIf="!genre.valid">Valid genre is required!</mat-error>
       </mat-form-field>
 
@@ -167,8 +195,16 @@
         <input
           matInput
           [formControl]="state"
-          type="string"
+          type="text"
           placeholder="Status"
+        />
+        <mat-error *ngIf="!state.valid">Valid state is required!</mat-error>
+      </mat-form-field>
+      <mat-form-field *ngIf="newColumn">
+        <input
+          matInput
+          [formControl]="newCol"
+          placeholder= {{newColumnName}}
         />
         <mat-error *ngIf="!state.valid">Valid state is required!</mat-error>
       </mat-form-field>
@@ -184,6 +220,24 @@
       cdkFocusInitial
     >
       Save
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #warningDialog>
+  <h1 mat-dialog-title>Warning!</h1>
+  <div mat-dialog-content>
+      <p>Are you sure you want to delete column {{newColumnName}}? All the information it contains will be lost.</p>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="dialogRef.close(false)">Cancel</button>
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="dialogRef.close(true)"
+      cdkFocusInitial
+    >
+      Yes
     </button>
   </div>
 </ng-template>

@@ -13,7 +13,7 @@ import {
   MatCardModule,
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { ListComponent } from './list/list.component';
@@ -39,6 +39,7 @@ import { AuthGuard } from './auth/auth-guard.service';
     BrowserAnimationsModule,
     AppRoutingModule,
     ReactiveFormsModule,
+    FormsModule,
   ],
   providers: [AuthService, AuthGuard],
   bootstrap: [AppComponent],
